@@ -27,7 +27,7 @@ Setting up a React app locally involves several steps, including cloning the rep
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-username/taskify.git
+   git clone https://github.com/myselfdhiraj/taskify-Todo-web-app
    cd taskify
    ```
 
