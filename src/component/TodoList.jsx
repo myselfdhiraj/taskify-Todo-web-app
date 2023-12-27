@@ -11,11 +11,10 @@ function TodoList() {
 
 const toggleAddTask = ()=>{
   setToggleAddDiv((prev)=>!prev)
-  console.log("clicked" + toggleAddDiv);
-
 }
 
   return (
+
     <TaskContainer>
       <div className="search">
         <input type="text" placeholder="Search Task...." />
@@ -29,6 +28,7 @@ const toggleAddTask = ()=>{
       </DateContainer>
       <ListTask />
     </TaskContainer>
+
   );
 }
 
