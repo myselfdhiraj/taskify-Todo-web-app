@@ -1,24 +1,56 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
-import { TiPin , TiPinOutline} from "react-icons/ti";
+import { TiPin, TiPinOutline } from "react-icons/ti";
+import { TodoContext } from "../context/TodoContext";
+import { getDatabase, ref, onValue } from "firebase/database";
+import { app } from "../Firebase";
 
 function ListTask() {
+  const [completed, setCompleted] = useState(false);
+
+  const { taskData, setTaskData } = useContext(TodoContext);
+
+  useEffect(() => {
+    const db = getDatabase(app);
+    const taskref = ref(db, "Todo");
+    onValue(taskref, (data) => {
+      setTaskData(data.val());
+    });
+    console.log("datafatch");
+  }, [completed]);
+
+  const taskDone = () => {
+    setCompleted((prev) => !prev);
+    console.log(completed);
+  };
+
   return (
-    <ListTasks>
-      <MdCheckBoxOutlineBlank fontSize="25px"/>
-      <div className="text">
-       hello
-      </div>
-      <TiPinOutline fontSize="25px"/>
-    </ListTasks>
+    <>
+      {taskData &&
+        Object.entries(taskData).map(([key, value]) => {
+          return (
+            <ListTasks key={key}>
+              {completed ? (
+                <MdCheckBox fontSize="25px" onClick={taskDone} color="#1fe052"/>
+              ) : (
+                <MdCheckBoxOutlineBlank fontSize="25px" onClick={taskDone} />
+              )}
+              <div className="text" >{value.Task}</div>
+              <TiPinOutline fontSize="25px" />
+            </ListTasks>
+          );
+        })}
+    </>
   );
 }
 
 export default ListTask;
 
 const ListTasks = styled.div`
+  margin: 5px auto;
   width: 100%;
+  gap: 5px;
   background-color: #fff;
   padding: 8px 10px;
   display: flex;
