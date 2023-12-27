@@ -1,20 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import ShowDays from "./ShowDays";
 import AddTask from "./AddTask";
 import ListTask from "./ListTask";
+import { IoCreateOutline } from "react-icons/io5";
+
 
 function TodoList() {
+  const  [toggleAddDiv,setToggleAddDiv] = useState(false)
+
+const toggleAddTask = ()=>{
+  setToggleAddDiv((prev)=>!prev)
+  console.log("clicked" + toggleAddDiv);
+
+}
+
   return (
     <TaskContainer>
       <div className="search">
         <input type="text" placeholder="Search Task...." />
       </div>
-        <DateContainer>
-            <ShowDays/>
-            <AddTask/>
-        </DateContainer>
-        <ListTask/>
+      <DateContainer>
+        <ShowDays />
+        {toggleAddDiv ? <AddTask setToggleAddDiv={setToggleAddDiv}/>:!<AddTask/>}
+        <AddTaskButton onClick={toggleAddTask}>
+          <IoCreateOutline fontSize="30px" />
+        </AddTaskButton>
+      </DateContainer>
+      <ListTask />
     </TaskContainer>
   );
 }
@@ -46,11 +59,18 @@ const TaskContainer = styled.div`
 `;
 
 const DateContainer = styled.div`
-width: 100%;
-display: flex;
-align-items: center;
-justify-content: space-between;
-margin: 0 auto;
-padding: 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  padding: 10px;
+  position: relative;
+`;
 
+const AddTaskButton = styled.button`
+all: unset;
+&:hover{
+  color: #333333;
+}
 `;
