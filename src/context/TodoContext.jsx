@@ -12,6 +12,7 @@ export const TodoContextProvider = ({ children }) => {
   const [userInput, setUserInput] = useState("");
   const date = new Date().toLocaleDateString("de-DE");
   const [taskData, setTaskData] = useState(null);
+  const [completed, setCompleted] = useState(false);
   function generateUniqueID() {
     const now = new Date();
     const todayDate = +now.toISOString().slice(0, 10).replace(/-/g, "");
@@ -44,7 +45,9 @@ export const TodoContextProvider = ({ children }) => {
         setTaskData,
         userInput,
         setUserInput,
-        addTaskOnDb
+        addTaskOnDb,
+        completed,
+        setCompleted
       }}
     >
       {children}

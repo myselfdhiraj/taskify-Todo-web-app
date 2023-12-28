@@ -1,15 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
 import { TiPin, TiPinOutline } from "react-icons/ti";
 import { TodoContext } from "../context/TodoContext";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, update } from "firebase/database";
 import { app } from "../Firebase";
 
 function ListTask() {
-  const [completed, setCompleted] = useState(false);
-
-  const { taskData, setTaskData } = useContext(TodoContext);
+  const { taskData, setTaskData, completed, setCompleted } =
+    useContext(TodoContext);
 
   useEffect(() => {
     const db = getDatabase(app);
@@ -17,13 +16,26 @@ function ListTask() {
     onValue(taskref, (data) => {
       setTaskData(data.val());
     });
-    console.log("datafatch");
-  }, [completed]);
+  }, [completed, setCompleted]);
 
-  const taskDone = () => {
-    setCompleted((prev) => !prev);
-    console.log(completed);
+
+  const taskDone = (key) => {
+    const db = getDatabase(app);
+    const taskRef = ref(db, "Todo/" + key);
+    const updatedCompleted = !taskData[key]?.Completed;
+    update(taskRef, {
+      Completed: updatedCompleted,
+    });
+    setTaskData((prevData) => ({
+      ...prevData,
+      [key]: {
+        ...prevData[key],
+        Completed: updatedCompleted,
+      },
+    }));
   };
+  
+
 
   return (
     <>
@@ -31,12 +43,19 @@ function ListTask() {
         Object.entries(taskData).map(([key, value]) => {
           return (
             <ListTasks key={key}>
-              {completed ? (
-                <MdCheckBox fontSize="25px" onClick={taskDone} color="#1fe052"/>
+              {value.Completed ? (
+                <MdCheckBox
+                  fontSize="25px"
+                  onClick={() => taskDone(key)}
+                  color="#1fe052"
+                />
               ) : (
-                <MdCheckBoxOutlineBlank fontSize="25px" onClick={taskDone} />
+                <MdCheckBoxOutlineBlank
+                  fontSize="25px"
+                  onClick={() => taskDone(key)}
+                />
               )}
-              <div className="text" >{value.Task}</div>
+              <div className="text">{value.Task}</div>
               <TiPinOutline fontSize="25px" />
             </ListTasks>
           );
