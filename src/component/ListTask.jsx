@@ -1,14 +1,28 @@
 import React, { useContext, useEffect } from "react";
-import styled from "styled-components";
-import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
-import { TiPin, TiPinOutline } from "react-icons/ti";
+import styled, { keyframes } from "styled-components";
+import {
+  MdCheckBoxOutlineBlank,
+  MdCheckBox,
+  MdEditDocument,
+  MdDelete,
+} from "react-icons/md";
 import { TodoContext } from "../context/TodoContext";
-import { getDatabase, ref, onValue, update } from "firebase/database";
+import { getDatabase, ref, onValue, update, remove } from "firebase/database";
 import { app } from "../Firebase";
 
 function ListTask() {
-  const { taskData, setTaskData, completed, setCompleted } =
-    useContext(TodoContext);
+  const {
+    taskData,
+    setTaskData,
+    completed,
+    setCompleted,
+    setToggleAddDiv,
+    setLable,
+    setUserInput,
+    userInput,
+    updateData,
+    setUpdateKey,
+  } = useContext(TodoContext);
 
   useEffect(() => {
     const db = getDatabase(app);
@@ -16,8 +30,8 @@ function ListTask() {
     onValue(taskref, (data) => {
       setTaskData(data.val());
     });
+    setLable("Add");
   }, [completed, setCompleted]);
-
 
   const taskDone = (key) => {
     const db = getDatabase(app);
@@ -34,8 +48,19 @@ function ListTask() {
       },
     }));
   };
-  
 
+  const EditBtn = (key,value) => {
+    setToggleAddDiv((prev) => !prev);
+    setUpdateKey(key);
+    setUserInput(value.Task)
+    setLable("Update");
+  };
+
+  const RemoveBtn = (id) => {
+    const db = getDatabase(app);
+    const taskRef = ref(db, "Todo/" + id);
+    remove(taskRef);
+  };
 
   return (
     <>
@@ -56,7 +81,19 @@ function ListTask() {
                 />
               )}
               <div className="text">{value.Task}</div>
-              <TiPinOutline fontSize="25px" />
+
+              <UpdateBox>
+                <MdEditDocument
+                  fontSize="25px"
+                  color="#489ff0"
+                  onClick={() => EditBtn(key,value )}
+                />
+                <MdDelete
+                  fontSize="25px"
+                  color="red"
+                  onClick={() => RemoveBtn(key)}
+                />
+              </UpdateBox>
             </ListTasks>
           );
         })}
@@ -87,4 +124,11 @@ const ListTasks = styled.div`
     text-overflow: ellipsis;
     padding: 4px 0px;
   }
+`;
+
+const UpdateBox = styled.div`
+  width: 50px;
+  gap: 5px;
+  display: flex;
+  align-items: center;
 `;

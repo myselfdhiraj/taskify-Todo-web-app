@@ -4,10 +4,18 @@ import { RxCross1 } from "react-icons/rx";
 import { TodoContext } from "../context/TodoContext";
 
 function AddTask({ setToggleAddDiv }) {
-  const { setUserInput,userInput,addTaskOnDb } = useContext(TodoContext);
+  const { setUserInput,userInput,addTaskOnDb,lable,updateData } = useContext(TodoContext);
+
   const submitHandler = (e) => {
+    
     e.preventDefault();
-    addTaskOnDb()
+    console.log(lable);
+    if(lable === "Add"){
+      console.log(lable);
+      addTaskOnDb()
+    }else{
+      updateData()
+    }
   };
 
   return (
@@ -29,7 +37,7 @@ function AddTask({ setToggleAddDiv }) {
           </label>
         </div>
         <div>
-          <button>Add Task</button>
+          <button>{lable} Task</button>
         </div>
       </form>
     </AddTaksContainer>
@@ -73,7 +81,7 @@ const AddTaksContainer = styled.div`
     button {
       all: unset;
       background-color: #fc3b6e;
-      width: 90px;
+      width: 120px;
       text-align: center;
       color: #fff;
       font-size: 1.1rem;

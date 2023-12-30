@@ -1,16 +1,20 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import ShowDays from "./ShowDays";
 import AddTask from "./AddTask";
 import ListTask from "./ListTask";
 import { IoCreateOutline } from "react-icons/io5";
+import { TodoContext } from "../context/TodoContext";
 
 
 function TodoList() {
-  const  [toggleAddDiv,setToggleAddDiv] = useState(false)
 
+  const {toggleAddDiv,setToggleAddDiv,setLable} = useContext(TodoContext)
+  
 const toggleAddTask = ()=>{
+  setLable("Add")
   setToggleAddDiv((prev)=>!prev)
+
 }
 
   return (
@@ -24,7 +28,7 @@ const toggleAddTask = ()=>{
         {toggleAddDiv ? <AddTask setToggleAddDiv={setToggleAddDiv}/>:!<AddTask/>}
         <AddTaskButton onClick={toggleAddTask}>
           <IoCreateOutline fontSize="30px" />
-        </AddTaskButton>
+        </AddTaskButton >
       </DateContainer>
       <ListTask />
     </TaskContainer>
